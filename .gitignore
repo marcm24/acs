@@ -1,0 +1,8 @@
+# Ignore .exe files (executables)
+*.exe
+
+# Ignore .out files (out files)
+*.out
+
+# Ignore .tmp files (temporary files)
+*.tmp
