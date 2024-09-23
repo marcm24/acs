@@ -3,15 +3,28 @@
 #include <chrono>
 
 
-void memory_test(size_t memory_size, size_t granularity, double read_ration, double write_ratio) {
+void memory_test(size_t memory_size, size_t granularity, double read_ratio, double write_ratio) {
     std::vector<int> memory(memory_size);
     size_t num_iterations = memory_size / granularity;
 
     auto start = std::chrono::high_resolution_clock::now();
     for (int i = 0; i < num_iterations; i++) {
+        size_t offset = i * granularity;
 
+        if (read_ratio > 0) {
+            // do read stuff
+        }
+
+        if (write_ratio > 0) {
+            // do write stuff
+        }
     }
     auto end = std::chrono::high_resolution_clock::now();
+
+    auto time = ((end - start).count()) / 1e9;
+
+    double bandwidth = xxx / time;
+
 }
 
 int main(){
