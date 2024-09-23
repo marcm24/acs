@@ -1,9 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <chrono>
-#include <cstdint>
 
-void read_latency(int mem_size, int iterations){
+void read_latency(size_t mem_size, int iterations){
     int mem_alloc = mem_size / sizeof(int); // allocation in the memory
     std::vector<int> memory(mem_alloc); // initialize array
 
@@ -40,9 +39,10 @@ void write_latency(int mem_size, int iterations){
 }
 
 int main(){
-    int l1_cache_size = 192 * 1024; // in kilobytes
-    int l2_cache_size = 3 * 1024 * 1024; // in megabytes
-    int l3_cache_size = 8 * 1024 * 1024; // in megabytes
+    size_t l1_cache_size = 192 * 1024; // in kilobytes
+    size_t l2_cache_size = 3 * 1024 * 1024; // in megabytes
+    size_t l3_cache_size = 8 * 1024 * 1024; // in megabytes
+    // size_t main_mem_size = 16 * 1024 * 1024 * 1024;
 
     std::cout << "------------------------------" << std::endl;
     std::cout << "L1 Cache (" << l1_cache_size / 1024 << "KB):" << std::endl;
