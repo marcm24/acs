@@ -12,6 +12,9 @@ L1 Cache Size: 32 KB (Per Core) [Total 192 KB] <br />
 L2 Cache Size:  512 KB (Per Core) [Total 3.072 MB] <br />
 L3 Cache Size: 4 MB (Shared between set of 2 cores) [Total 8 MB] <br />
 
+Task Manager Image: <br />
+![image](https://github.com/user-attachments/assets/fb6648dc-e666-481e-9154-c3694748da3f) <br />
+
 The main memory size is 16GB. <br />
 
 ## Task 1: Read/Write Latency With Zero Queuing Delay
