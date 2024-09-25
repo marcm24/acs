@@ -2,6 +2,7 @@
 #include <chrono>
 #include <vector>
 #include <cstdlib>
+#include <cmath>
 
 void multiply(std::vector<int> nums) {
     volatile long result = 0; // prevent compiler optimization
@@ -22,37 +23,39 @@ float runTime(std::vector<int>& array) {
     return float(elapsed.count());
 }
 
-void cacheTest(size_t array_size) {
-    // larger array to simulate TLB misses
-    size_t larger_array_size = array_size * 10; 
+void cacheTest(size_t array_size, size_t larger_array_size) {
+    // Initialize a larger array to simulate TLB misses
     std::vector<int> larger_array(larger_array_size);
     
     for (size_t i = 0; i < larger_array_size; i++) { 
         larger_array[i] = rand() % 100; // random value from 0 to 99
     }
 
-    // Access elements in a non-sequential manner to simulate TLB misses
+    // access elements in a non-sequential manner (random access) to simulate TLB misses
     std::vector<int> access_order(array_size);
     for (size_t i = 0; i < array_size; i++) {
-        access_order[i] = rand() % larger_array_size; // random index
+        access_order[i] = rand() % larger_array_size; // random index in larger array
     }
 
-    // Create a new vector to hold the accessed elements
+    // new vector to hold the accessed elements
     std::vector<int> accessed_elements(array_size);
     for (size_t i = 0; i < array_size; i++) {
         accessed_elements[i] = larger_array[access_order[i]];
     }
 
+    // measure execution time for non-sequential access pattern
     volatile float execution = runTime(accessed_elements);
-    std::cout << "Array Size: " << array_size << " | Run Time: " << execution / 1024 << " ns" << std::endl;
+    std::cout << "Array Size: " << array_size / 1024 << " KB | Run Time: " << execution / 1024 << " ns" << std::endl;
 }
 
 int main() {
     size_t iterations = 20; // set to run amount of iterations
+    size_t page_size = 4096; // typical page size is 4KB
 
-    for (size_t i = 1; i <= iterations; i++) {
-        size_t mem_size = i * 1024; // 1KB to 20KB
-        cacheTest(mem_size);
+    for (size_t i = 0; i <= iterations; i++) {
+        size_t array_size = i * 1024; // Array size from 1KB to 20KB
+        size_t larger_array_size = 100 * 1024 * 1024; // 100MB larger array to force TLB misses
+        cacheTest(array_size, larger_array_size);
     }
 
     return 0;

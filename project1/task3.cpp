@@ -20,14 +20,14 @@ void measureLatency(size_t numOperations, size_t dataSize) { // measure latency
     std::vector<size_t> writeTimes;
     std::vector<size_t> readTimes;
 
-    for (size_t i = 0; i < numOperations; ++i) { // measure write latency
+    for (size_t i = 0; i < numOperations; i++) { // measure write latency
         auto start = std::chrono::high_resolution_clock::now();
         writeMemory(memory, i % dataSize, i);  // write operation
         auto end = std::chrono::high_resolution_clock::now();
         writeTimes.push_back((end - start).count());
     }
 
-    for (size_t i = 0; i < numOperations; ++i) { // measure read latency
+    for (size_t i = 0; i < numOperations; i++) { // measure read latency
         auto start = std::chrono::high_resolution_clock::now();
         readMemory(memory, i % dataSize);  // read operation
         auto end = std::chrono::high_resolution_clock::now();
@@ -54,10 +54,12 @@ void measureLatency(size_t numOperations, size_t dataSize) { // measure latency
 }
 
 int main() {
-    size_t numOperations = 1000000;  // Number of read/write operations
     size_t dataSize = 1024 * 1024;   // Size of simulated memory (1 MB)
-
-    measureLatency(numOperations, dataSize);
+    std::cout << "operations: " << 100 << std::endl;
+    measureLatency(100, dataSize);
+    std::cout << "---------------------------------------------------------------" << std::endl;
+    std::cout << "operations: " << 1000000 << std::endl;
+    measureLatency(1000000, dataSize);
 
     return 0;
 }
