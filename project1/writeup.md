@@ -41,11 +41,38 @@ We can confirm the validity of these bandwidths through the sysbench benchmarkin
 
 ![image](https://github.com/user-attachments/assets/f326febc-268c-443a-a874-cea2900cc4a8) <br /> 
 
-We can see that for a block size of 64B with a write only operation, we have 4922.04 / 1024 = 4.81, which is ~0.6 GB/s away from our discovered result but within a reasonable margin. Running the sysbench commands allow us to see the real bandwidth values.: <br />
+We can see that for a block size of 64B with a write only operation, we have 4922.04 / 1024 = 4.81, which is 0.51327 GB/s away from our discovered result but within a reasonable margin. Running the sysbench commands allow us to see the real bandwidth values: <br />
 ```
-sysbench memory --memory-block-size=<> --memory-total-size=1G run
+sysbench memory --memory-block-size=<block_size> --memory-total-size=1G run
 ```
 ## Task 3: Trade-off Between Read/Write Latency And Memory Throughput
+
+## Task 4: Impact of Cach Miss Ratio on Software Speed
+
+We are to test the impact of the cache miss ratio on the speed of our program running. It is expected that with a higher cache miss ratio the speed of our program will decrease. <br />
+
+In the developed C++ program simple multiplication operations on integer elements within an array are performed with memory accesses at the current and next element for each iteration. The program simulates random memory accesses within the cache on varying sizes of memory blocks from 1KB to 20KB. <br />
+
+Upon running the [task4.cpp](https://github.com/marcm24/acs/blob/main/project1/task4.cpp) file we can see the output: <br />
+
+![image](https://github.com/user-attachments/assets/b55841a5-2fda-4f08-b48e-e262523ad552)
+
+To simulate cache misses we can run cachegrind, a profiling tool apart of valgrind to simulate how programs interact with different levels of cache within the processor. We can run cachegrind on our program to simulate cache misses and analyze the new run times. We can run cachegrind with the following command: <br />
+
+```
+valgrind --tool=cachegrind ./task4.out
+```
+After running cachegrind we can examine the following output: <br />
+
+![image](https://github.com/user-attachments/assets/e9b4f4b5-1def-450b-84c2-343c2c9aaf64) <br />
+
+We can see a large increase in run time due to the simulated cache misses. With the L1 cache having a total miss ratio of 0.05% accross the L1 instruction and data cache, we can see an increase of ~35 times the original runtime. Although the times are in nanoseconds and still relatively quick in the human perspective, in terms of the machines performance this is a substantial increase in program run time. <br />
+
+## Task 5: Impact of TLB Miss Ratio on Software Speed
+
+## Technical Issues Encountered: 
+
+
 
 
 
