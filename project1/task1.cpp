@@ -1,6 +1,6 @@
 #include <iostream>
 #include <vector>
-#include <chrono>
+#include <chrono> // high res clock
 
 void read_latency(size_t mem_size, int iterations){
     int mem_alloc = mem_size / sizeof(int); // allocation in the memory
@@ -62,6 +62,7 @@ int main(){
     write_latency(l3_cache_size, 1000);
     std::cout << "------------------------------" << std::endl;
 
+    // main memory run throug 1GB 16 times?
     /*
     std::cout << "Main Memory (" << ADD_MAIN_MEMORY_HERE / 1024 / 1024 / 1024 << "GB):" << std::endl;
     read_latency(main_size, 1000);
