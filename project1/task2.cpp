@@ -1,10 +1,6 @@
 #include <iostream>
 #include <vector>
 #include <chrono> // high res clock
-#include <cstring> // memset
-
-// bandwidth: bytes transferred / time
-// read ratio goes up, bandwidth goes down
 
 const volatile size_t buffer = 1 * 1024 * 1024 * 1024; // 1GB Buffer
 

@@ -6,3 +6,6 @@
 
 # Ignore .tmp files (temporary files)
 *.tmp
+
+# Ignore cachegrind.out.<pid> files (output files from cachegrind)
+cachegrind.out.*
