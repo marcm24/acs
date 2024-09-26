@@ -45,12 +45,11 @@ void cacheTest(size_t array_size, size_t larger_array_size) {
 
     // measure execution time for non-sequential access pattern
     volatile float execution = runTime(accessed_elements);
-    std::cout << "Array Size: " << array_size / 1024 << " KB | Run Time: " << execution / 1024 << " ns" << std::endl;
+    std::cout << "Array Size: " << array_size << " | Run Time: " << execution / 1024 << " ns" << std::endl;
 }
 
 int main() {
     size_t iterations = 20; // set to run amount of iterations
-    size_t page_size = 4096; // typical page size is 4KB
 
     for (size_t i = 0; i <= iterations; i++) {
         size_t array_size = i * 1024; // Array size from 1KB to 20KB

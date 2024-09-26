@@ -1,49 +1,66 @@
 #include <iostream>
 #include <vector>
 #include <chrono> // high res clock
+#include <cstdlib> // random access
 
 std::vector<int> initializeMemory(size_t dataSize) { // initialize memory
     return std::vector<int>(dataSize, 0);
 }
 
-void writeMemory(std::vector<int>& memory, size_t index, int value) { // function to write to memory
+void writeMemory(std::vector<int>& memory, size_t index, int value) { // write to memory
     memory[index] = value;
 }
 
-int readMemory(const std::vector<int>& memory, size_t index) { // function to read from memory
-
+int readMemory(const std::vector<int>& memory, size_t index) { // read from memory
     return memory[index];
 }
 
-void measureLatency(size_t numOperations, size_t dataSize) { // measure latency
+void measureLatency(size_t numOperations, size_t dataSize, bool sequentialAccess) { // measure latency
     std::vector<int> memory = initializeMemory(dataSize);
     std::vector<size_t> writeTimes;
     std::vector<size_t> readTimes;
 
-    for (size_t i = 0; i < numOperations; i++) { // measure write latency
+    // measure write latency
+    for (size_t i = 0; i < numOperations; i++) {
         auto start = std::chrono::high_resolution_clock::now();
-        writeMemory(memory, i % dataSize, i);  // write operation
+        
+        size_t index;
+        if (sequentialAccess) {
+            index = i % dataSize; // sequential access
+        } else {
+            index = rand() % dataSize; // random access
+        }
+        
+        writeMemory(memory, index, i);  // write operation
         auto end = std::chrono::high_resolution_clock::now();
         writeTimes.push_back((end - start).count());
     }
 
-    for (size_t i = 0; i < numOperations; i++) { // measure read latency
+    // measure read latency
+    for (size_t i = 0; i < numOperations; i++) {
         auto start = std::chrono::high_resolution_clock::now();
-        readMemory(memory, i % dataSize);  // read operation
+        
+        size_t index;
+        if (sequentialAccess) {
+            index = i % dataSize; // sequential access
+        } else {
+            index = rand() % dataSize; // random access
+        }
+        
+        readMemory(memory, index);  // read operation
         auto end = std::chrono::high_resolution_clock::now();
         readTimes.push_back((end - start).count());
     }
 
+    // calculate total write and read times
     size_t totalWriteTime = 0;
     size_t totalReadTime = 0;
-
-    for (auto time : writeTimes) totalWriteTime += time; // get total write time
-    for (auto time : readTimes) totalReadTime += time; // get total read time
+    for (auto time : writeTimes) totalWriteTime += time; // Get total write time
+    for (auto time : readTimes) totalReadTime += time; // Get total read time
 
     double avgWriteLatency = double(totalWriteTime) / numOperations;
     double avgReadLatency = double(totalReadTime) / numOperations;
 
-    // Calculate throughput
     double writeThroughput = double(numOperations) / (totalWriteTime / 1e9); // ops per second
     double readThroughput = double(numOperations) / (totalReadTime / 1e9); // ops per second
 
@@ -54,12 +71,14 @@ void measureLatency(size_t numOperations, size_t dataSize) { // measure latency
 }
 
 int main() {
-    size_t dataSize = 1024 * 1024;   // Size of simulated memory (1 MB)
-    std::cout << "operations: " << 100 << std::endl;
-    measureLatency(100, dataSize);
+    size_t dataSize = 1024 * 1024;   // simulated memory (1 MB)
+
+    std::cout << "Testing with Higher Throughput:" << std::endl;
+    measureLatency(1000000, dataSize, true); // sequential access for higher throughput
     std::cout << "---------------------------------------------------------------" << std::endl;
-    std::cout << "operations: " << 1000000 << std::endl;
-    measureLatency(1000000, dataSize);
+
+    std::cout << "Testing with Lower Throughput:" << std::endl;
+    measureLatency(1000000, dataSize, false); // random access for lower throughput
 
     return 0;
 }
