@@ -95,10 +95,16 @@ Comparing these results to that of the previous task before running cachegrind, 
 
 ## Technical Issues Encountered: 
 
+There were several issues encountered when trying to run the Linux command perf. As described in the task sections, WSL uses a custom Linux kernel which leaves it with limited to no ability to utilize perf. Attempting to run perf results in: <br />
 
+![image](https://github.com/user-attachments/assets/c4e89d36-6fee-4178-8a2f-70f8f511c5b4) <br />
 
+Another file for perf was found in another Linux directory. Upon running it in this directory to measure cache information, it shows its limited functionality: <br />
 
+![image](https://github.com/user-attachments/assets/80197d73-1fb7-4cba-84fe-5b7e6ab1c196) <br />
 
+We can see that these commands are for some reason not supported. Similar with the TLB measurements we can see the same results: <br />
 
+![image](https://github.com/user-attachments/assets/b085b220-0e6e-4942-ad53-27a309450b3c) <br />
 
-
+Workarounds involved utilizing cachegrind and designing the program to simulate cache misses.
