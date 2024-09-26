@@ -46,6 +46,15 @@ We can see that for a block size of 64B with a write only operation, we have 492
 sysbench memory --memory-block-size=<block_size> --memory-total-size=1G run
 ```
 ## Task 3: Trade-off Between Read/Write Latency And Memory Throughput
+We are to test the trade-off between read and write latency and memory throughput. It is expected that with more memory throughput we will see lower read and write latencies. The trade-off in this case is the way in which we are accessing the memory.  <br />
+
+In the developed C++ program we access memory in a sequential and random fashion. The sequential access corresponds to more memory throughput where the random access corresponds to less memory throughput. Depending on the application, a sequential or random access may be required which will result in higher or lower memory throughput, respectively. <br />
+
+Upon running the [task3.cpp](https://github.com/marcm24/acs/blob/main/project1/task3.cpp) file we can see the output: <br />
+
+![image](https://github.com/user-attachments/assets/27cf24aa-917f-4db3-9654-aa7bdd4bff49) <br />
+
+We can see the decreased latency with the increase in memory throughput. This lines up with our expectation, and overall makes sense as if the memory is faster ot access, it will be able to do more operations in a unit of time as opposed to memory with higher latency. <br />
 
 ## Task 4: Impact of Cach Miss Ratio on Software Speed
 
@@ -56,6 +65,8 @@ In the developed C++ program simple multiplication operations on integer element
 Upon running the [task4.cpp](https://github.com/marcm24/acs/blob/main/project1/task4.cpp) file we can see the output: <br />
 
 ![image](https://github.com/user-attachments/assets/b55841a5-2fda-4f08-b48e-e262523ad552)
+
+The best way to test the impact of cache misses is through the Linux command perf as it can record instances of cache hits and misses. On Windows Subsystem for Linux (WSL) the perf command does not work properly due to WSL using a custom Linux kernel. More details are listed in the [Technical Issues Encountered](#techincal-issues-encountered) section. <br />
 
 To simulate cache misses we can run cachegrind, a profiling tool apart of valgrind to simulate how programs interact with different levels of cache within the processor. We can run cachegrind on our program to simulate cache misses and analyze the new run times. We can run cachegrind with the following command: <br />
 
@@ -69,6 +80,18 @@ After running cachegrind we can examine the following output: <br />
 We can see a large increase in run time due to the simulated cache misses. With the L1 cache having a total miss ratio of 0.05% accross the L1 instruction and data cache, we can see an increase of ~35 times the original runtime. Although the times are in nanoseconds and still relatively quick in the human perspective, in terms of the machines performance this is a substantial increase in program run time. <br />
 
 ## Task 5: Impact of TLB Miss Ratio on Software Speed
+
+Similar to the previous task, we are to measure the impact of the transition lookaside buffer (TLB) miss ratio on the speed of our software. It is also expected that with a higher TLB miss ratio the speed of the software is decreased. <br />
+
+There were several issues encountered within the testing of this program. To obtain the best results the Linux command perf would be able to accurately measure TLB hits and misses. On Windows Subsystem for Linux (WSL) the perf command does not work properly due to WSL using a custom Linux kernel. More details are listed in the [Technical Issues Encountered](#techincal-issues-encountered) section. <br />
+
+The best method to mediate this was found through simulation of TLB misses through the C++ program. In the program the sum mulitplication arithmetic is run on a vector of integers. The program then runs through a smaller and larger array and performs random, non-sequential accesses to simulate TLB misses.
+
+Upon running [task5.cpp](https://github.com/marcm24/acs/blob/main/project1/task5.cpp) file we can see the output: <br />
+
+![image](https://github.com/user-attachments/assets/41ef87ec-ede4-417a-81cb-14c1289cda9a) <br />
+
+Comparing these results to that of the previous task before running cachegrind, we can analyze the difference in run times. We can see that for an array size of 1024 the runtime in task 4 was 8.238ns. The run time with simulated TLB misses was 13.43ns. This is approximately a 57% increase in runtime. Through deliberation with ChatGPT this result is indicative of a substantial TLB miss rate. It would not typically be this high however, due to the simulated nature of the program we can see the more drastic side of the results opposed to the most accurate. In the end we can still confirm that the TLB misses increase program run time. <br /> 
 
 ## Technical Issues Encountered: 
 
