@@ -2,29 +2,28 @@
 #include <cstdlib>
 #include <ctime>  
 #include <vector>
+#include <string>
+#include <chrono> // high res clock
+#include <thread> // multithreading
+#include <immintrin.h> // for x86 SIMD instructions
 
-std::vector<std::vector<int>> generateMatrix(int rows, int cols, std::string fill) {
+int BLOCK_SIZE = 32; // cache size
+
+// dense matrix generation
+std::vector<std::vector<int>> denseMatrix(int rows, int cols, double density) {
     std::vector<std::vector<int>> matrix(rows, std::vector<int>(cols, 0));
-    double threshold;
-
-    // threshold based on fill type
-    if (fill == "dense") {
-        threshold = 0.9; 
-    } else {
-        threshold = 0.1; // for sparse matrices
-    }
 
     // random number generation
     std::srand(static_cast<unsigned int>(std::time(nullptr)));
 
     for (int i = 0; i < rows; ++i) {
         for (int j = 0; j < cols; ++j) {
-            // Random pick of 0 or a number between 1 and 10
+            // random pick of 0 or a number between 1 and 10
             double randNum = static_cast<double>(std::rand()) / RAND_MAX;
 
-            // Fill matrix based on threshold
-            if (randNum < threshold) {
-                // Generate a random number between 1 and 10 for non-zero values
+            // fill matrix based on threshold
+            if (randNum < density) {
+                // generate a random number between 1 and 10 for non-zero values
                 matrix[i][j] = std::rand() % 10 + 1; // Generates a number from 1 to 10
             }
         }
@@ -33,7 +32,29 @@ std::vector<std::vector<int>> generateMatrix(int rows, int cols, std::string fil
     return matrix;
 }
 
-// Function to multiply two matrices
+std::vector<std::vector<int>> sparceMatrix(int rows, int cols, double sparcity) {
+    std::vector<std::vector<int>> matrix(rows, std::vector<int>(cols, 0));
+
+    // random number generation
+    std::srand(static_cast<unsigned int>(std::time(nullptr)));
+
+    for (int i = 0; i < rows; ++i) {
+        for (int j = 0; j < cols; ++j) {
+            // random pick of 0 or a number between 1 and 10
+            double randNum = static_cast<double>(std::rand()) / RAND_MAX;
+
+            // fill matrix based on threshold
+            if (randNum < sparcity) {
+                // generate a random number between 1 and 10 for non-zero values
+                matrix[i][j] = std::rand() % 10 + 1; // Generates a number from 1 to 10
+            }
+        }
+    }
+
+    return matrix;
+}
+
+// function to multiply two matrices
 std::vector<std::vector<int>> multiplyMatrices(const std::vector<std::vector<int>>& A, const std::vector<std::vector<int>>& B) {
     int rowsA = A.size();
     int colsA = A[0].size();
@@ -60,60 +81,221 @@ std::vector<std::vector<int>> multiplyMatrices(const std::vector<std::vector<int
     return result;
 }
 
-// Function to display a matrix
-void displayMatrix(const std::vector<std::vector<int>>& matrix) {
-    for (const auto& row : matrix) {
-        for (int elem : row) {
-            std::cout << elem << " ";
+void runMultiplicationTime(const std::vector<std::vector<int>>& A, const std::vector<std::vector<int>>& B) {
+    int dimensions = A.size();
+
+    auto start = std::chrono::high_resolution_clock::now();
+
+    // if multiplication of matrices is not possible
+    try {
+        std::vector<std::vector<int>> C = multiplyMatrices(A, B);
+    } catch (const std::invalid_argument& e) {
+        std::cerr << "error: " << e.what() << std::endl;
+        return;
+    }
+
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
+
+    std::cout << "base time for " << dimensions << "x" << dimensions << " matrix multiplicaton: " <<  duration.count() << " seconds" << std::endl;
+}
+
+// function for multiplying certain sections of matrix
+void multiplySection(const std::vector<std::vector<int>>& A, const std::vector<std::vector<int>>& B, 
+                     std::vector<std::vector<int>>& C, int startRow, int endRow) {
+    int colsA = A[0].size();
+    int colsB = B[0].size();
+
+    for (int i = startRow; i < endRow; ++i) {
+        for (int j = 0; j < colsB; ++j) {
+            for (int k = 0; k < colsA; ++k) {
+                C[i][j] += A[i][k] * B[k][j];
+            }
         }
-        std::cout << std::endl;
     }
 }
 
-int main(int argc, char *argv[]) {
-    // multiple threads, x86 SIMD instructions, minimize cache miss
-    try {
-        if (argc < 2) {
-            throw std::runtime_error("error: expected specification for threading");
+// function to multiply matrices using multithreading
+std::vector<std::vector<int>> multiplyMatricesMT(const std::vector<std::vector<int>>& A, const std::vector<std::vector<int>>& B, int numThreads) {
+    int rowsA = A.size();
+    int colsA = A[0].size();
+    int colsB = B[0].size();
+    std::vector<std::vector<int>> result(rowsA, std::vector<int>(colsB, 0));
+
+    std::vector<std::thread> threads;
+    int rowsPerThread = rowsA / numThreads;
+    int remainingRows = rowsA % numThreads;
+
+    // launch threads to handle different sections of the matrix
+    for (int i = 0; i < numThreads; ++i) {
+        int startRow = i * rowsPerThread;
+        int endRow = (i + 1) * rowsPerThread + (i == numThreads - 1 ? remainingRows : 0);
+        threads.emplace_back(multiplySection, std::cref(A), std::cref(B), std::ref(result), startRow, endRow);
+    }
+
+    // join threads
+    for (auto& thread : threads) {
+        thread.join();
+    }
+
+    return result;
+}
+
+// function to test the runtime of multithreading
+void runMultiplicationTimeMT(const std::vector<std::vector<int>>& A, const std::vector<std::vector<int>>& B, int numThreads) {
+    auto start = std::chrono::high_resolution_clock::now();
+    std::vector<std::vector<int>> C = multiplyMatricesMT(A, B, numThreads);
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
+
+    std::cout << "time for " << A.size() << "x" << B[0].size() << " matrix multiplication with " << numThreads << " threads: " << duration.count() << " seconds" << std::endl;
+}
+
+// function to utilize SIMD instruction for multiplying different rows
+void simdMultiplyRow(const std::vector<std::vector<int>>& A, const std::vector<std::vector<int>>& B, std::vector<std::vector<int>>& C, int startRow, int endRow) {
+    int colsA = A[0].size();
+    int colsB = B[0].size();
+
+    for (int i = startRow; i < endRow; ++i) {
+        for (int j = 0; j < colsB; ++j) {
+            __m256i sum = _mm256_setzero_si256(); // initialize sum 
+
+            for (int k = 0; k < colsA; k += 8) { // process 8 integers at a time
+                // load 8 integers from each matrix into SIMD registers
+                __m256i vecA = _mm256_loadu_si256((__m256i*)&A[i][k]);
+                __m256i vecB = _mm256_loadu_si256((__m256i*)&B[k][j]);
+                
+                // multiply the values
+                __m256i vecProduct = _mm256_mullo_epi32(vecA, vecB);
+                
+                // sum the results
+                sum = _mm256_add_epi32(sum, vecProduct);
+            }
+
+            // extract sum from the SIMD register
+            int tempSum[8];
+            _mm256_storeu_si256((__m256i*)tempSum, sum);
+            C[i][j] = tempSum[0] + tempSum[1] + tempSum[2] + tempSum[3] + tempSum[4] + tempSum[5] + tempSum[6] + tempSum[7];
         }
     }
-    catch (const std::exception &e) {
-        std::cerr << e.what() << std::endl;
-        return 1;
-    } 
+}
 
-    std::string threading = argv[1];
+// function to multiply matrices using SIMD
+std::vector<std::vector<int>> multiplyMatricesSIMD(const std::vector<std::vector<int>>& A, const std::vector<std::vector<int>>& B) {
+    int rowsA = A.size();
+    int colsA = A[0].size();
+    int colsB = B[0].size();
+    std::vector<std::vector<int>> result(rowsA, std::vector<int>(colsB, 0));
 
-    if (threading == "mt") { // mt for multiple threads
+    simdMultiplyRow(A, B, result, 0, rowsA);
 
-    } else if (threading == "simd") { // simd for x86 instructions
+    return result;
+}
 
-    } else if (threading == "cache") { // cache to minimize cache misses
+// function to test the runtime
+void runMultiplicationTimeSIMD(const std::vector<std::vector<int>>& A, const std::vector<std::vector<int>>& B) {
+    auto start = std::chrono::high_resolution_clock::now();
+    std::vector<std::vector<int>> C = multiplyMatricesSIMD(A, B);
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
 
+    std::cout << "time for SIMD " << A.size() << "x" << B[0].size() << " matrix multiplication: " << duration.count() << " seconds" << std::endl;
+}
+
+// block sections of matrix throughout cache
+std::vector<std::vector<int>> multiplyMatricesBlocked(const std::vector<std::vector<int>>& A, const std::vector<std::vector<int>>& B) {
+    int n = A.size();
+    std::vector<std::vector<int>> C(n, std::vector<int>(n, 0));
+
+    // iterate through blocks
+    for (int ii = 0; ii < n; ii += BLOCK_SIZE) {
+        for (int jj = 0; jj < n; jj += BLOCK_SIZE) {
+            for (int kk = 0; kk < n; kk += BLOCK_SIZE) {
+                // perform multiplication on each block
+                for (int i = ii; i < std::min(ii + BLOCK_SIZE, n); ++i) {
+                    for (int j = jj; j < std::min(jj + BLOCK_SIZE, n); ++j) {
+                        int sum = 0;
+                        int k = kk;
+
+                        // loop unrolling
+                        for (; k <= std::min(kk + BLOCK_SIZE, n) - 4; k += 4) {
+                            sum += A[i][k] * B[k][j];
+                            sum += A[i][k + 1] * B[k + 1][j];
+                            sum += A[i][k + 2] * B[k + 2][j];
+                            sum += A[i][k + 3] * B[k + 3][j];
+                        }
+
+                        // handle remaining elements
+                        for (; k < std::min(kk + BLOCK_SIZE, n); ++k) {
+                            sum += A[i][k] * B[k][j];
+                        }
+
+                        C[i][j] += sum;
+                    }
+                }
+            }
+        }
     }
 
-    int rowsA = 3;
-    int colsA = 2;
-    int rowsB = 2;
-    int colsB = 4;
+    return C;
+}
 
-    // matrices
-    std::vector<std::vector<int>> A = generateMatrix(rowsA, colsA, "dense");
-    std::vector<std::vector<int>> B = generateMatrix(rowsB, colsB, "dense");
+// function to measure and print the runtime
+void runMultiplicationTimeBlocked(const std::vector<std::vector<int>>& A, const std::vector<std::vector<int>>& B) {
+    auto start = std::chrono::high_resolution_clock::now();
+    std::vector<std::vector<int>> C = multiplyMatricesBlocked(A, B);
+    auto end = std::chrono::high_resolution_clock::now();
+    std::chrono::duration<double> duration = end - start;
 
-    std::cout << "matrix A:" << std::endl;
-    displayMatrix(A);
+    std::cout << "Time for blocked " << A.size() << "x" << B[0].size() << " matrix multiplication: " << duration.count() << " seconds" << std::endl;
+}
 
-    std::cout << "matrix B:" << std::endl;
-    displayMatrix(B);
+int main(int argc, char *argv[]) {
 
-    // multiply matrices A and B
-    try {
-        std::vector<std::vector<int>> C = multiplyMatrices(A, B);
-        std::cout << "matrix C = (A * B):" << std::endl;
-        displayMatrix(C);
-    } catch (const std::invalid_argument& e) {
-        std::cerr << "Error: " << e.what() << std::endl;
+// error checking if number of command line arguments not sufficient
+try {
+    if (argc < 2) {
+        throw std::runtime_error("error: expected specification for optimization technique");
+    }
+}
+catch (const std::exception &e) {
+    std::cerr << e.what() << std::endl;
+    return 1;
+} 
+
+std::string optimization = argv[1]; // optimization technique string
+
+// matrix generation
+std::vector<std::vector<int>> matrixA = sparceMatrix(100, 100, 0.1);
+std::vector<std::vector<int>> matrixB = sparceMatrix(100, 100, 0.1);
+std::vector<std::vector<int>> matrixC = sparceMatrix(1000, 1000, 0.1);
+std::vector<std::vector<int>> matrixD = sparceMatrix(1000, 1000, 0.1);
+
+if (optimization == "mt") { // mt for multiple threads
+    if (argc < 3){
+        std::cerr << "error: expected specification of amount of threads" << std::endl;
+    } else {
+        int threads = std::stoi(argv[2]);
+        runMultiplicationTime(matrixA, matrixB);
+        runMultiplicationTime(matrixC, matrixD);
+        std::cout << "--------------------------------------------------------" << std::endl;
+        runMultiplicationTimeMT(matrixA, matrixB, threads);
+        runMultiplicationTimeMT(matrixC, matrixD, threads);
+    }
+    } else if (optimization == "simd") { // simd for x86 instructions | compile with -march=native
+        runMultiplicationTime(matrixA, matrixB);
+        runMultiplicationTime(matrixC, matrixD);
+        std::cout << "--------------------------------------------------------" << std::endl;
+        runMultiplicationTimeSIMD(matrixA, matrixB);
+        runMultiplicationTimeSIMD(matrixC, matrixD);
+    } else if (optimization == "cache") { // cache to minimize cache misses
+        runMultiplicationTime(matrixA, matrixB);
+        runMultiplicationTime(matrixC, matrixD);
+        std::cout << "--------------------------------------------------------" << std::endl;
+        runMultiplicationTimeBlocked(matrixA, matrixB);
+        runMultiplicationTimeBlocked(matrixC, matrixD);
+    } else {
+        std::cerr << "error: unsupported optimization technique" << std::endl; // if command argument is not properly input
     }
 
     return 0;
