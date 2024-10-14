@@ -47,3 +47,14 @@ The cache was optimized in this program through two methods: cache blocking and 
 ![image](https://github.com/user-attachments/assets/e8769449-8d8e-4535-bcdd-9366b985625a)
 
 We can see that the timing for the multiplication of the matrices is greater than the previous two optimization techniques, but still faster than the native implementation. The decrease in time was from 12.1161 seconds to 7.08713 seconds for the 1000x1000 matrices, decrease from 2658.89 seconds (~44 minutes) to 928.752 seconds (~15.4 minutes) for the 5000x5000 matrices, and a decrease from 13249.3 seconds (~3.7 hours) to 3913.36 seconds (~1.08 hours) for the 8000x8000 matrices. <br />
+
+The same results can be observed for other sparcities: <br />
+![image](https://github.com/user-attachments/assets/b7ea2cf2-d9cf-4da4-a13b-fd6c86f7b7d7)
+
+The decreased sparcities have varying results in terms of an increase and decrease in some times. In this case this holds as the sparcities are low enough that there are mostly the same amount of 0's within the matrices. Even with this, the program still is indexing the matrices and spends time accessing each matrix element. <br />
+
+## Dense-Dense Matrix Multiplication
+
+## Sparse-Sparse Matrix Multiplication
+
+## Dense-Sparse Matrix Multiplication
