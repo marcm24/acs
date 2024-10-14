@@ -247,7 +247,7 @@ void runMultiplicationTimeBlocked(const std::vector<std::vector<int>>& A, const 
     auto end = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> duration = end - start;
 
-    std::cout << "Time for blocked " << A.size() << "x" << B[0].size() << " matrix multiplication: " << duration.count() << " seconds" << std::endl;
+    std::cout << "time for blocked " << A.size() << "x" << B[0].size() << " matrix multiplication: " << duration.count() << " seconds" << std::endl;
 }
 
 int main(int argc, char *argv[]) {
@@ -266,10 +266,21 @@ catch (const std::exception &e) {
 std::string optimization = argv[1]; // optimization technique string
 
 // matrix generation
-std::vector<std::vector<int>> matrixA = sparceMatrix(100, 100, 0.1);
-std::vector<std::vector<int>> matrixB = sparceMatrix(100, 100, 0.1);
-std::vector<std::vector<int>> matrixC = sparceMatrix(1000, 1000, 0.1);
-std::vector<std::vector<int>> matrixD = sparceMatrix(1000, 1000, 0.1);
+std::vector<std::vector<int>> matrixA = sparceMatrix(1000, 1000, 0.01); // 1%
+std::vector<std::vector<int>> matrixB = sparceMatrix(1000, 1000, 0.01);
+std::vector<std::vector<int>> matrixC = sparceMatrix(5000, 5000, 0.01);
+std::vector<std::vector<int>> matrixD = sparceMatrix(5000, 5000, 0.01);
+std::vector<std::vector<int>> matrixE = sparceMatrix(8000, 8000, 0.01);
+std::vector<std::vector<int>> matrixF = sparceMatrix(8000, 8000, 0.01);
+
+std::vector<std::vector<int>> matrixG = sparceMatrix(1000, 1000, 0.001); // 0.1%
+std::vector<std::vector<int>> matrixH = sparceMatrix(1000, 1000, 0.001);
+std::vector<std::vector<int>> matrixI = sparceMatrix(5000, 5000, 0.001);
+std::vector<std::vector<int>> matrixJ = sparceMatrix(5000, 5000, 0.001);
+std::vector<std::vector<int>> matrixK = sparceMatrix(8000, 8000, 0.001);
+std::vector<std::vector<int>> matrixL = sparceMatrix(8000, 8000, 0.001);
+
+
 
 if (optimization == "mt") { // mt for multiple threads
     if (argc < 3){
@@ -278,25 +289,31 @@ if (optimization == "mt") { // mt for multiple threads
         int threads = std::stoi(argv[2]);
         runMultiplicationTime(matrixA, matrixB);
         runMultiplicationTime(matrixC, matrixD);
+        runMultiplicationTime(matrixE, matrixF);
         std::cout << "--------------------------------------------------------" << std::endl;
         runMultiplicationTimeMT(matrixA, matrixB, threads);
         runMultiplicationTimeMT(matrixC, matrixD, threads);
+        runMultiplicationTimeMT(matrixE, matrixF, threads);
     }
     } else if (optimization == "simd") { // simd for x86 instructions | compile with -march=native
         runMultiplicationTime(matrixA, matrixB);
         runMultiplicationTime(matrixC, matrixD);
+        runMultiplicationTime(matrixE, matrixF);
         std::cout << "--------------------------------------------------------" << std::endl;
         runMultiplicationTimeSIMD(matrixA, matrixB);
         runMultiplicationTimeSIMD(matrixC, matrixD);
+        runMultiplicationTimeSIMD(matrixE, matrixF);
     } else if (optimization == "cache") { // cache to minimize cache misses
         runMultiplicationTime(matrixA, matrixB);
         runMultiplicationTime(matrixC, matrixD);
+        runMultiplicationTime(matrixE, matrixF);
         std::cout << "--------------------------------------------------------" << std::endl;
         runMultiplicationTimeBlocked(matrixA, matrixB);
         runMultiplicationTimeBlocked(matrixC, matrixD);
+        runMultiplicationTimeBlocked(matrixE, matrixF);
     } else {
         std::cerr << "error: unsupported optimization technique" << std::endl; // if command argument is not properly input
     }
-
+    
     return 0;
 }
