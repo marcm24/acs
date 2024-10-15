@@ -266,21 +266,12 @@ catch (const std::exception &e) {
 std::string optimization = argv[1]; // optimization technique string
 
 // matrix generation
-std::vector<std::vector<int>> matrixA = sparceMatrix(1000, 1000, 0.01); // 1%
-std::vector<std::vector<int>> matrixB = sparceMatrix(1000, 1000, 0.01);
-std::vector<std::vector<int>> matrixC = sparceMatrix(5000, 5000, 0.01);
-std::vector<std::vector<int>> matrixD = sparceMatrix(5000, 5000, 0.01);
-std::vector<std::vector<int>> matrixE = sparceMatrix(8000, 8000, 0.01);
-std::vector<std::vector<int>> matrixF = sparceMatrix(8000, 8000, 0.01);
-
-std::vector<std::vector<int>> matrixG = sparceMatrix(1000, 1000, 0.001); // 0.1%
-std::vector<std::vector<int>> matrixH = sparceMatrix(1000, 1000, 0.001);
-std::vector<std::vector<int>> matrixI = sparceMatrix(5000, 5000, 0.001);
-std::vector<std::vector<int>> matrixJ = sparceMatrix(5000, 5000, 0.001);
-std::vector<std::vector<int>> matrixK = sparceMatrix(8000, 8000, 0.001);
-std::vector<std::vector<int>> matrixL = sparceMatrix(8000, 8000, 0.001);
-
-
+std::vector<std::vector<int>> matrixA = denseMatrix(1000, 1000, 0.7);
+std::vector<std::vector<int>> matrixB = sparceMatrix(1000, 1000, 0.3);
+std::vector<std::vector<int>> matrixC = denseMatrix(2000, 2000, 0.7);
+std::vector<std::vector<int>> matrixD = sparceMatrix(2000, 2000, 0.3);
+std::vector<std::vector<int>> matrixE = denseMatrix(3000, 3000, 0.7);
+std::vector<std::vector<int>> matrixF = sparceMatrix(3000, 3000, 0.3);
 
 if (optimization == "mt") { // mt for multiple threads
     if (argc < 3){
