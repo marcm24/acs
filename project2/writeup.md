@@ -54,7 +54,30 @@ The same results can be observed for other sparcities: <br />
 The decreased sparcities have varying results in terms of an increase and decrease in some times. In this case this holds as the sparcities are low enough that there are mostly the same amount of 0's within the matrices. Even with this, the program still is indexing the matrices and spends time accessing each matrix element. <br />
 
 ## Dense-Dense Matrix Multiplication
+Below are the timing results of multiplying dense matrices (of density 70%) together. The sizes were decreased to save time upon running as the matrices would have over an hour to multiply together if they were sized larger. <br />
+
+![image](https://github.com/user-attachments/assets/7564a522-ef37-4a9c-b89c-0d7db5447292) <br />
+We can see that the time to run the multiplication increases as the size of the matrices increase. <br />
 
 ## Sparse-Sparse Matrix Multiplication
+Below are the timing results of multiplying sparse matrices of different sizes with the same sparcity of 20%: <br />
+![image](https://github.com/user-attachments/assets/85b19bb9-3f92-43c6-a451-6441ee43b313) <br />
+We can see that the time to run the multiplication increases as the size of the matrices increase. The times are ever so slightly less than that of the dense matrices. As stated previously, the program still makes the accesses to the matrix locations and will take the time to do so regardless if the value is zero or non-zero. <br />
 
+Below are the timing results of multiplying sparse matrices of the same sizes with varying sparcities: <br />
+![image](https://github.com/user-attachments/assets/c89a46b5-e636-43ef-acfa-68efa48bef84) <br />
+The first iteration had sparcities of 10% and 40%, the second with sparcities of 20% and 30%, and the final iteration with sparcities of 1% and 25%. In this case we can see that the normal iteration runs quickest on the lower sparcities, where the SIMD optimized multiplications run faster with larger sparcities. <br />
 ## Dense-Sparse Matrix Multiplication
+Below are the timing results of multiplying dense and sparse matrices of different sizes with the same density of 70% and sparcity of 30%: <br />
+![image](https://github.com/user-attachments/assets/a042e15d-20bd-47c2-967f-2a8159d8a641) <br />
+
+We can see that the time to run the multiplication increases as the size of the matrices increase. The timing is similar to that of the sparse-sparse multiplication and slightly quicker than the dense-dense multiplication. <br />
+
+Below are the timing results of multiplying dense and sparse matrices of the same sizes with varying sparcities: <br />
+![image](https://github.com/user-attachments/assets/d3afd4e8-0945-4e94-889d-778964651e48) <br />
+The first iteration had density and sparcity of 90% and 10%, the second with density and sparcity of 80% and 20%, and the final iteration with 70% and 30%. In this case we can see the normal iteration speeds up as the density decreases and sparcity increases. With the optimization below the highest and lowest density iteration was the quickest. <br />
+
+## Final Analysis and Conclusions
+Throughout this project there were three optimization techniques applied to decrease the time it took for large matrix multiplication. These techniques were configurable multithreading, x86 SIMD instructions, and through cache optimization with cache blocking and loop unrolling. While all three of the optimization techniques decreased the time it took for the programs to run it was found that the cache optimization had the smallest impact, where multithreading and the SIMD instructions had greater impacts, with the SIMD instructions having the greatest impact on performance. The native matrix multiplication took hours to complete, with the optimization techniques speeding up the process. <br />
+
+Throughout the optimization technique testing and further density/sparcity testing it was found to be that as the size of the matrices increased, the run time of the program drastically increased. We even reached times of up to over 3 hours with matrix sizes of 8000x8000, which left us with needing to use smaller matrix sizes for the sake of time. The sparcity and density of the matrices had little effect on the run time of the program. Although intuitively it would make sense that the sparse matrices would allow for faster program run time, with this programs implementation all the elements of the matrix are accessed. Since they are still accessed this will impact the run time. While the numbers were picked at random, the slight differences show in that the larger numbers, more frequently occurring in the dense matrices, will take longer to calculate than a matrix populated with mostly zeros. We can see that the sparse matrices throughout had slightly lower run times than the dense matrices. 
