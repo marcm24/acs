@@ -1,7 +1,7 @@
 # Project 3: SSD Performance Profiling
 
 ## Introduction
-This project details the use of the [Flexible I/O Tester](https://github.com/axboe/fio) (FIO)
+This project details the use of the [Flexible I/O Tester](https://github.com/axboe/fio) (FIO) to experiment on the performance of an SSD under varying conditions such as different access sizes, different read/write ratios, and different I/O queue depth. <br />
 
 ## System Specifications
 Partitioned 5GB on a 1TB NVMe SSD (WD Black SN750 SE)  for FIO Testing: <br />
