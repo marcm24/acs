@@ -5,9 +5,13 @@ for line in file_open:
     file_list.append(line)
 
 for line in file_list:
-    if "bw" in line:
+    if "read" in line: # read information
         print(line)
-    if "iops" in line:
+    if "write" in line: # write information
         print(line)
-    if "latency" in line:
+    if "lat (usec)" in line: # latency
+        print(line)
+    if "bw" in line: # bandwidth
+        print(line)
+    if "iops" in line: # throughput
         print(line)
