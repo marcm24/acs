@@ -90,4 +90,32 @@ We can see for this queue depth we have an average read latency of 7.65μs and w
 
 
 ## Analysis
-Organizing the data obtained in the previous section we can analyze the results:
+### Data Access Size Analysis
+We can analyze the effect on latency through the following plot: <br />
+![image](https://github.com/user-attachments/assets/e6ddc8f2-6a46-4a40-a4e9-24b4de07a202) <br />
+
+We can analyze the effect on bandwidth through the following plot: <br />
+![image](https://github.com/user-attachments/assets/b47578d4-5bb4-420f-8609-46c8bb88ac51) <br />
+
+We can analyze the effect on throughput through the following plot: <br />
+![image](https://github.com/user-attachments/assets/bd620090-79d2-4d4c-a3f6-a0a2053fb554) <br />
+
+### Read/Write Ratio Analysis
+We can analyze the effect on latency through the following plot: <br />
+![image](https://github.com/user-attachments/assets/a7067f01-d16e-4f85-9330-61d80c7afb80) <br />
+
+We can analyze the effect on bandwidth through the following plot: <br />
+![image](https://github.com/user-attachments/assets/235be05a-1850-4bea-9873-ba3db8e100fa) <br />
+
+We can analyze the effect on throughput through the following plot: <br />
+![image](https://github.com/user-attachments/assets/c79386d7-5e87-412a-a553-95012e114cd7) <br />
+
+### I/O Queue Depth Analysis
+We can analyze the effect on latency through the following plot: <br />
+![image](https://github.com/user-attachments/assets/e30d33ca-a60c-4896-afc4-8281b34e0b83) <br />
+
+We can analyze the effect on bandwidth through the following plot: <br />
+![image](https://github.com/user-attachments/assets/e58d1d8c-f43b-46be-8306-f8202eac986e) <br />
+
+We can analyze the effect on throughput through the following plot: <br />
+![image](https://github.com/user-attachments/assets/9eba0e36-6efa-409d-b5fe-13d9cdbbadc9) <br />
