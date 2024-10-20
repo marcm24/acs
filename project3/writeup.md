@@ -10,7 +10,12 @@ Partitioned 5GB on a 1TB NVMe SSD (WD Black SN750 SE)  for FIO Testing: <br />
 ![image](https://github.com/user-attachments/assets/ec2787d0-0135-4a58-af2c-71be8c7cbe28) <br />
 
 - Sequential read speeds up to 3600 MB/s 
-- Utilizes PCIe Gen4 interconnect
+- Sequential write speeds up to 2830 MB/s
+- Random read performance of 525000 4KB IOPS
+- Random write performance of 640000 4KB IOPS
+- Utilizes PCIe Gen4 interconnect <br />
+
+[Device Specification Source](https://www.westerndigital.com/en-ae/products/internal-drives/wd-black-sn750-se-nvme-ssd?sku=WDS100T1B0E)
 
 ## FLexible I/O Tester (FIO) Parameters
 To conduct tests with Flexible I/O Tester (FIO) we can utilzie the following command: <br />
