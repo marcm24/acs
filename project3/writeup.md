@@ -29,7 +29,7 @@ Where we can define: <br />
 This command will perform 1 job called "ssd_test" that will run for 60 seconds and provide  bandwidth, latency, and throughput numbers. <br />
 
 ## Tests
-The results obtained in the following tests were parsed and organized from the [python script](https://github.com/marcm24/acs/blob/main/project3/results.py) in the repository. It organizes the most critical information we want to obtain from the FIO tests including latency, bandwidth, and throughput. <br />
+The results obtained in the following tests were parsed and organized from the [python script](https://github.com/marcm24/acs/blob/main/project3/results.py) in the repository. It organizes the most critical information we want to obtain from the FIO tests including latency, bandwidth, and throughput. For all tests the runtime is held constant at 60 seconds. Other parameters that are held constant and/or changed are detailed within the test section. <br />
 
 ### Varying Data Access Sizes
 During this experiment the parameters held constant are the read/write ratio at 50:50, and I/O queue depth of 1. <br />
@@ -100,6 +100,8 @@ We can analyze the effect on bandwidth through the following plot: <br />
 We can analyze the effect on throughput through the following plot: <br />
 ![image](https://github.com/user-attachments/assets/bd620090-79d2-4d4c-a3f6-a0a2053fb554) <br />
 
+From these results we can see that as we increase the data access size the latency and bandwidth increase. This lines up as for the latency, it takes longer for a single I/O operation to occur with more data being transferred. Since we are transferring more data the bandwidth will increase to reflect that, as it is a measurement of the amount of data we transfer per second. Despite the increase in amount of data we are transferring, because there is an increase in latency we can see that there is a decrease in the throughput as we increase the data access size. <br />
+
 ### Read/Write Ratio Analysis
 We can analyze the effect on latency through the following plot: <br />
 ![image](https://github.com/user-attachments/assets/a7067f01-d16e-4f85-9330-61d80c7afb80) <br />
@@ -110,6 +112,7 @@ We can analyze the effect on bandwidth through the following plot: <br />
 We can analyze the effect on throughput through the following plot: <br />
 ![image](https://github.com/user-attachments/assets/c79386d7-5e87-412a-a553-95012e114cd7) <br />
 
+From these results we can see that as we decrease the read ratio the read latency decreases, and as we increase the write ratio the write latency increases. As we increase the amount of write operations we are performing it takes longer for them to occur, similarly with the read operations. The same applies to  the bandwidth, as we have a higher read ratio the read bandwidth increases, and as we have a higher write ratio the write bandwidth increases. From both of these results we can gather that read operations are easier to perform as the read latency is less than that of the write latency, and the read bandwidth is higher than that of the write bandwidth. As a result of this we find that the throughput is maximized at read only operations, where it drastically decreases when performing a majority read and write (70:30 R/W). From that point it increases as we move towards a write only operation, but the throughput at a write only operation is still less than that of a read only. <br />
 ### I/O Queue Depth Analysis
 We can analyze the effect on latency through the following plot: <br />
 ![image](https://github.com/user-attachments/assets/e30d33ca-a60c-4896-afc4-8281b34e0b83) <br />
@@ -119,3 +122,5 @@ We can analyze the effect on bandwidth through the following plot: <br />
 
 We can analyze the effect on throughput through the following plot: <br />
 ![image](https://github.com/user-attachments/assets/9eba0e36-6efa-409d-b5fe-13d9cdbbadc9) <br />
+
+From these results we can see that as we increase the I/O queue depth the read and write latency largely remain the same. As we were able to analyze from the previous results, the write latency is higher than the read latency. The queue depth of 16 is the only point in which the latency for both reads and writes increase. This point is an outlier for the bandwidth and throughput tests as well. For the bandwidth, as we increase the queue depth we can see an overall decrease. As we increase from a queue depth of 16 the bandwidth increases slightly which lines up as there are more operations queued and more operations to occur per second. The overall decrease comes from the test time of 60 seconds being uniform throughout the tests, and there being more operations waiting to occur and ultimately not being able to occur in that time. The throughput follows the same trend as the bandwidth, with a drastic decrease at a queue depth of 16 and slight increase past that point. Overall, the larger the queue depth the bandwidth and throughput are still less than that of a queue depth of 1. <br />
