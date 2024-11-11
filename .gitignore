@@ -13,3 +13,6 @@ cachegrind.out.*
 #Ignore .vscode folder
 .vscode/*
 !.vscode/settings.json
+
+#Ignore project 4 txt file (too large for github)
+project4/Column.txt
