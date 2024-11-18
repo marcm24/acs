@@ -32,12 +32,12 @@ std::map<std::string, int> encode(const std::string& filename) {
         }
         column.close();
     } else {
-        std::cerr << "Error: can't open file" << std::endl;
+        std::cerr << "error: can't open file" << std::endl;
     }
 
     auto end_time = std::chrono::high_resolution_clock::now(); // End timing
     std::chrono::duration<double> elapsed_time = end_time - start_time;
-    std::cout << "Baseline encoding completed in " << elapsed_time.count() << " seconds" << std::endl;
+    std::cout << "baseline encoding completed in " << elapsed_time.count() << " seconds" << std::endl;
 
     return dictionary;
 }
@@ -56,7 +56,7 @@ std::map<std::string, int> encode_multithreaded(const std::string& filename, int
     // Read the entire file into memory
     std::ifstream file(filename);
     if (!file.is_open()) {
-        std::cerr << "Error: can't open file" << std::endl;
+        std::cerr << "error: can't open file" << std::endl;
         return {};
     }
 
@@ -94,7 +94,7 @@ std::map<std::string, int> encode_multithreaded(const std::string& filename, int
 
     auto end_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed_time = end_time - start_time;
-    std::cout << "Optimized multithreaded encoding completed in " << elapsed_time.count() << " seconds" << std::endl;
+    std::cout << "optimized multithreaded encoding completed in " << elapsed_time.count() << " seconds with " << num_threads << " threads" << std::endl;
 
     return final_dictionary;
 }
@@ -127,7 +127,7 @@ int main(int argc, char* argv[]) {
     std::map<std::string, int> dictionary_baseline = encode(filename);
     
     // Measure performance of optimized multithreaded version
-    std::cout << "Running optimized multithreaded encoding..." << std::endl;
+    std::cout << "running optimized multithreaded encoding..." << std::endl;
     int num_threads = std::thread::hardware_concurrency(); // Number of available hardware threads
     std::map<std::string, int> dictionary_multithreaded = encode_multithreaded(filename, num_threads);
 

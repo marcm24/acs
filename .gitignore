@@ -16,3 +16,4 @@ cachegrind.out.*
 
 #Ignore project 4 txt file (too large for github)
 project4/Column.txt
+project4/Column_encoded.txt

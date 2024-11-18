@@ -69,7 +69,7 @@ std::map<std::string, int> encode_multithreaded(const std::string& filename, int
 
     auto end_time = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double> elapsed_time = end_time - start_time;
-    std::cout << "Optimized multithreaded encoding completed in " << elapsed_time.count() << " seconds" << std::endl;
+    std::cout << "optimized multithreaded encoding completed in " << elapsed_time.count() << " seconds" << std::endl;
 
     return final_dictionary;
 }
@@ -122,7 +122,7 @@ void simd_map_search(const std::map<std::string, int>& dictionary, const std::st
 
 int main(int argc, char* argv[]) {
     if (argc < 2) {
-        std::cerr << "Usage: " << argv[0] << " <filename>" << std::endl;
+        std::cerr << "usage: " << argv[0] << " <filename>" << std::endl;
         return 1;
     }
 
