@@ -83,5 +83,26 @@ For the sake of example, we can run a large test with matrices sized 10,000x10,0
 This took 14212.663ms to run, or 14 seconds. Running this test on any of the previous programs would have taken hours to run. As shown in [project 2](https://github.com/marcm24/acs/blob/main/project2/writeup.md). <br />
 
 ## Test 3: Two-Dimensional Convolution
+2D convolution is a technique used in image processing for image filtering, edge detection, sharpening, and blurring. It involves taking an image, represented as a large 2D matrix and applying a kernel, represented as a small matrix over the image to modify the pixels of the image. The mathematical operation of the technique is shown below, sourced from: [Example of 2D Convolution](https://www.songho.ca/dsp/convolution/convolution2d_example.html). <br />
+
+![image](https://github.com/user-attachments/assets/52ccfcb3-f5e2-470c-ae34-35f14b481b73) <br />
+
+The operation was performed in a [base C++ program](https://github.com/marcm24/acs/blob/main/projectFinal/2dconvolution.cpp), [multithreaded C++ program](https://github.com/marcm24/acs/blob/main/projectFinal/2dconvolution_multithread.cpp), [C++ program using x86 SIMD instructions](https://github.com/marcm24/acs/blob/main/projectFinal/2dconvolution_simd.cpp), and a [CUDA program](https://github.com/marcm24/acs/blob/main/projectFinal/2dconvolution.cu).
+
+Each of the convolution programs performed the operation on an image of size 3000x3000, with kernel size 5x5. <br />
+### Base C++ Program
+![image](https://github.com/user-attachments/assets/644500bc-42b8-4e92-b18d-9a0b9e880e22) <br />
+The base program took 1574.39ms, or 1.5 seconds to complete. <br />
+### Multithreaded C++ Program
+![image](https://github.com/user-attachments/assets/9b47a1f5-868b-4c7c-97a1-bf11a12703a1) <br />
+The multithreaded program took 356.13ms to complete. <br />
+### C++ Program Using x86 SIMD Instructions
+![image](https://github.com/user-attachments/assets/d6b06eb5-78a7-41b1-951b-ee4922322263) <br />
+The C++ program using x86 SIMD instructions took 2237.62ms, or 2.2 seconds to complete. <br />
+### CUDA Program
+![image](https://github.com/user-attachments/assets/06de6ba6-bd92-4b52-8571-59bdf89c490c) <br />
+The CUDA program took 191.413ms to complete. <br />
+
+We can see that the multithreaded program was faster than the base and program using SIMD instructions however, the CUDA program was faster than all of these programs.
 
 ## Analysis
