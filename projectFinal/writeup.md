@@ -6,5 +6,82 @@ In previous projects we were able to observe the performance benefits of better 
 ## System Specifications + Requirements
 
 Tests performed using the following system specifications: <br />
-![image](https://github.com/user-attachments/assets/0de8c52b-3500-4317-957d-b4cd971ad9f1)
-The full list of system specifcations with detailed information is provided in the 
+![image](https://github.com/user-attachments/assets/0de8c52b-3500-4317-957d-b4cd971ad9f1) <br />
+The full list of system specifcations with detailed information is provided in the [system_specs.txt](https://github.com/marcm24/acs/blob/main/projectFinal/system_specs.txt) file. <br />
+The use of the NVIDIA CUDA toolkit requires a CUDA capable NVIDIA GPU to be installed on the system the program is being run on. The CUDA toolkit also requires Microsoft Visual Studio to be installed on the system to utilize some of the software components such as the cl compiler tool. More detailed requirements for the NVIDIA CUDA toolkit is listed in section 1.1 of the [NVIDIA CUDA Installation Guide for
+Microsoft Windows](https://developer.download.nvidia.com/compute/cuda/11.4.0/docs/sidebar/CUDA_Installation_Guide_Windows.pdf). <br />
+
+## Test 1: Vector Addition
+The first test we will use to analyze the effects on program time utilizing a GPU for processing is through vector addition. Vector addition is applied in many programs and in theory can be accelerated with the use of the parallel architecture of a GPU. The following results are obtained for the base [C++](https://github.com/marcm24/acs/blob/main/projectFinal/vectoradd.cpp) program: <br />
+![image](https://github.com/user-attachments/assets/d8e25545-1a7e-4eb4-95b6-5ae587788441) <br />
+
+We can see that it runs in 0.42ms for vector sizes of 100000 elements. The results for the [CUDA program](https://github.com/marcm24/acs/blob/main/projectFinal/vectoradd.cu) are shown below: <br />
+![image](https://github.com/user-attachments/assets/500f34a9-5ef5-4793-9ab5-89d61dcf0cbd) <br />
+We can see that it runs in 151.0616ms for vector sizes of 100000 elements. <br />
+
+The following results for the vector addition on the C++ program for vector sizes of 500000 are shown below: <br />
+![image](https://github.com/user-attachments/assets/89da2dd7-24e1-45df-8a44-9132fcc0a2e0) <br />
+This program runs in 2.1375ms. <br />
+
+
+The following results for the CUDA program with vector sizes of 500000 are shown below: <br />
+![image](https://github.com/user-attachments/assets/7971d45f-69e9-4e27-b4be-7533e2608786) <br />
+We can see that it runs in 140.293ms. <br />
+
+The following results for the C++ program for vector sizes of 1000000 are shown below: <br />
+![image](https://github.com/user-attachments/assets/8edb2439-9d93-4f79-8139-d2a4caebd6ca) <br />
+We can see that it runs in 4.2138ms. <br />
+
+The following results for the CUDA program with vector sizes of 1000000 are shown below: <br />
+![image](https://github.com/user-attachments/assets/1798c938-24d6-40f9-99a6-92d4aaaf1884) <br />
+We can see that it runs in 155.9924ms. <br />
+
+From these tests we can see that the C++ program ran faster, but as the vector sizes increased the time the program ran increased. The CUDA program took longer, but regardless of the vector size the run time remained in the same range of 140ms-160ms.
+## Test 2: Matrix Multiplication
+The next test we will use to analyze the effects on program time utilizing a GPU for processing is through matrix multiplication. Matrix multiplication is utilized in programs for various applications, such as image processing, gaming, machine learning, etc. <br />
+
+In this test we will not only compare the results of the [matrix multiplication CUDA program](https://github.com/marcm24/acs/blob/main/projectFinal/matrixmult.cu) to a [base C++ program](https://github.com/marcm24/acs/blob/main/projectFinal/matrixmult.cpp), but with a [multithreaded C++ program](https://github.com/marcm24/acs/blob/main/projectFinal/matrixmult_multithread.cpp) and a [C++ program using x86 SIMD instructions](https://github.com/marcm24/acs/blob/main/projectFinal/matrixmult_simd.cpp). <br />
+
+From results obtained in previous projects matrix multiplication of matrices sized 5000x5000 or greater took, multiple hours to complete. In the interest of time we will perform the base operation on a matrix sized at most 3000x3000. For reference, 8000x8000 matrices took 3 hours to multiply on a base program, and 1 hour with multithreading. <br />
+
+### Base C++ Program
+The following results were obtained for a base matrix multiplication of matrices sized 1000x1000, 2000x2000, and 3000x3000: <br />
+![image](https://github.com/user-attachments/assets/9900d779-b898-431e-91bd-827025cd0a47) <br />
+![image](https://github.com/user-attachments/assets/ac82bd07-4c54-4a01-92e3-c237f8c2f157) <br />
+![image](https://github.com/user-attachments/assets/b7d0062e-5265-4bc9-8be2-21dd2fa06d12) <br />
+
+The 1000x1000 matrix took 11140.4ms, or 11s to multiply, the 2000x2000 matrix 137259ms, or 2 minutes and 17s to multiply, and the 3000x3000 matrix took 504736ms to mutliply, or 8 minutes and 24s. <br />
+
+### Multithreaded C++ Program
+
+The following results were ovtained for a multithreaded matrix multiplation of matricies sized 1000x1000, 2000x2000, and 3000x3000: <br />
+![image](https://github.com/user-attachments/assets/19db2e22-0a48-4921-b39a-7f4193fb1416) <br />
+![image](https://github.com/user-attachments/assets/a0aa8917-5913-421d-99e0-9053aac21a21) <br />
+![image](https://github.com/user-attachments/assets/85dd9554-372b-42a9-ab21-cf07312d72f5) <br />
+
+The 1000x1000 matrix took 1483.25ms, or 1.4s to multiply, the 2000x2000 matrix 17098.9ms, or 17s to multiply, and the 3000x3000 matrix took 65384.5ms to mutliply, or 1 minute and 5s. We can see that the multithreaded program with the maximum amount of threads allowable by the CPU (8 for this systems i7-9700K) already increased the runtime of the program. <br />
+
+### C++ Program Using x86 SIMD Instructions
+(Note: For compilation the command *-march=native* must be included to utilize the x86 SIMD instructions)
+The following results were ovtained for a matrix multiplation program utilizing x86 SIMD instructions of matricies sized 1000x1000, 2000x2000, and 3000x3000: <br />
+
+![image](https://github.com/user-attachments/assets/9fb0a1c1-ced1-43a1-b82c-e15c4fdbcaa9) <br />
+![image](https://github.com/user-attachments/assets/d749395f-8115-485a-887d-3e2d41317e24) <br />
+![image](https://github.com/user-attachments/assets/84b27f98-0e36-4a0c-8de9-4e999342d87a) <br />
+
+The 1000x1000 matrix took 1941.17ms, or 1.9s to multiply, the 2000x2000 matrix 23582.6ms, or 23s to multiply, and the 3000x3000 matrix took 81035.6ms to mutliply, or 1 minute and 21s. We can see that the program x86 SIMD instructions increased the runtime of the program, but not more than the multithreaded program. <br />
+
+### CUDA Program
+![image](https://github.com/user-attachments/assets/fbd2bc2a-1178-4b35-87e2-8ea2a9c8bb42) <br />
+![image](https://github.com/user-attachments/assets/57e33fce-d812-48ae-aa14-4909d5c174a0)<br />
+![image](https://github.com/user-attachments/assets/ed2f8e04-9e83-4315-8ebf-0e721811e8f9) <br />
+
+The 1000x1000 matrix took 15.773ms to multiply, the 2000x2000 matrix 134.443ms to multiply, and the 3000x3000 matrix took 416.962ms to mutliply. This is significantly faster than any of the other programs run previously. <br />
+
+For the sake of example, we can run a large test with matrices sized 10,000x10,000 with the CUDA program: <br />
+![image](https://github.com/user-attachments/assets/eb4ec00d-7680-4d33-a8b8-0a5ce6c9a4ac) <br />
+This took 14212.663ms to run, or 14 seconds. Running this test on any of the previous programs would have taken hours to run. As shown in [project 2](https://github.com/marcm24/acs/blob/main/project2/writeup.md). <br />
+
+## Test 3: Two-Dimensional Convolution
+
+## Analysis
