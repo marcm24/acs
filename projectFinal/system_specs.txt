@@ -1,0 +1,25 @@
+NVIDIA system information report created on: 12/01/2024 19:27:57
+NVIDIA app version: 11.0.1.163
+Operating system: Microsoft Windows 10 Home, Version 10.0.19045
+DirectX runtime version: DirectX 12
+Driver: Game Ready Driver - 566.14 - Tue Nov 12, 2024
+CPU: Intel(R) Core(TM) i7-9700K CPU @ 3.60GHz
+RAM: 32.0 GB
+Storage (3): SSD - 931.5 GB,SSD - 232.9 GB,+1 more
+
+Graphics card
+GPU processor: NVIDIA GeForce RTX 3060 Ti
+Direct3D feature level: 12_1
+CUDA cores: 4864
+Graphics clock: 1755 MHz
+Resizable bar: No
+Memory data rate: 14.00 Gbps
+Memory interface: 256-bit
+Memory bandwidth: 448.064 GB/s
+Total available graphics memory: 24543 MB
+Dedicated video memory: 8192 MB GDDR6
+System video memory: 0 MB
+Shared system memory: 16351 MB
+Video BIOS version: 94.04.6b.00.11
+IRQ: Not used
+Bus: PCI Express x16 Gen3ZA
