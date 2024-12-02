@@ -41,16 +41,16 @@ int main() {
     std::chrono::duration<double, std::milli> duration = stop - start; // timing result
 
     // output the result matrix
-    std::cout << "Result Matrix (C):\n";
+    /*std::cout << "Result Matrix (C):\n";
     for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
             std::cout << C[i][j] << " ";
         }
         std::cout << "\n";
-    }
+    }*/
 
     // output the time taken
-    std::cout << "\nTime taken for matrix multiplication: " << duration.count() << " ms\n";
+    std::cout << "\nTime taken for matrix multiplication of size " << N << ": " << duration.count() << " ms\n";
 
     return 0;
 }

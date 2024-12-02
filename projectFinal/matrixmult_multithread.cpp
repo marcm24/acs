@@ -55,7 +55,7 @@ int main() {
     std::chrono::duration<double, std::milli> duration = stop - start; // timing result
 
     // output the time taken
-    std::cout << "\nTime taken for matrix multiplication (multithreaded): " << duration.count() << " ms\n";
+    std::cout << "\nTime taken for matrix multiplication (multithreaded) of size " << N << ": " << duration.count() << " ms\n";
 
     return 0;
 }

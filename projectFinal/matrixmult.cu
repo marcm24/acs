@@ -28,7 +28,7 @@ void checkCudaError(cudaError_t status, const char* message) {
 }
 
 int main() {
-    const int N = 1000; // matrix dimension
+    const int N = 3000; // matrix dimension
     const int size = N * N * sizeof(int);
 
     // allocate memory for host matrices
@@ -73,14 +73,14 @@ int main() {
     checkCudaError(cudaMemcpy(C, d_C, size, cudaMemcpyDeviceToHost), "Failed to copy C to host");
 
     // output the result matrix and execution time
-    printf("Result Matrix (C):\n");
+  /*  printf("Result Matrix (C):\n");
     for (int i = 0; i < N; ++i) {
         for (int j = 0; j < N; ++j) {
             printf("%d ", C[i * N + j]);
         }
         printf("\n");
-    }
-    printf("\nTime taken for matrix multiplication: %.3f ms\n", duration.count());
+    }*/
+    printf("\nTime taken for matrix multiplication of size %d: %.3f ms\n", N, duration.count());
 
     // free device and host memory
     cudaFree(d_A);

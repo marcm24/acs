@@ -4,7 +4,7 @@
 #include <cstdlib> // for rand()
 
 int main() {
-    const int arraySize = 1000; // change this to set the size of the vectors
+    const int arraySize = 1000000; // change this to set the size of the vectors
     std::vector<int> a(arraySize);
     std::vector<int> b(arraySize);
     std::vector<int> c(arraySize, 0); // result vector initialized to 0

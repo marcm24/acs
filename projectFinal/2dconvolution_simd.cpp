@@ -1,8 +1,8 @@
 #include <iostream>
 #include <vector>
 #include <chrono>
-#include <immintrin.h> // For AVX
-#include <cstdlib>     // For rand()
+#include <immintrin.h> // for AVX
+#include <cstdlib>     // for rand()
 
 void convolution2D_SIMD(const std::vector<std::vector<int>>& input, 
                         const std::vector<std::vector<int>>& kernel,
@@ -20,46 +20,47 @@ void convolution2D_SIMD(const std::vector<std::vector<int>>& input,
                     sum = _mm256_add_epi32(sum, _mm256_mullo_epi32(val, ker));
                 }
             }
-            output[i][j] = _mm256_extract_epi32(sum, 0); // Simplified for brevity
+            output[i][j] = _mm256_extract_epi32(sum, 0);
         }
     }
 }
 
 int main() {
-    // Set the size of the square matrix and kernel size
-    int size = 2000;        // Size of the square matrix 
-    int kernelSize = 3;   // Kernel size
+    // set the size of the square matrix and kernel size
+    int size = 3000;        // size of the square matrix 
+    int kernelSize = 5;   // kernel size
 
-    // Initialize the input matrix with random values
+    // initialize the input matrix with random values
     std::vector<std::vector<int>> input(size, std::vector<int>(size));
     for (int i = 0; i < size; ++i) {
         for (int j = 0; j < size; ++j) {
-            input[i][j] = rand() % 10; // Random values between 0 and 9
+            input[i][j] = rand() % 10; // random values between 0 and 9
         }
     }
 
-    // Initialize the kernel matrix with random values
+    // initialize the kernel matrix with random values
     std::vector<std::vector<int>> kernel(kernelSize, std::vector<int>(kernelSize));
     for (int i = 0; i < kernelSize; ++i) {
         for (int j = 0; j < kernelSize; ++j) {
-            kernel[i][j] = rand() % 3; // Random values between 0 and 2
+            kernel[i][j] = rand() % 3; // random values between 0 and 2
         }
     }
 
-    // Create the output matrix
+    // create the output matrix
     std::vector<std::vector<int>> output(size, std::vector<int>(size, 0));
 
-    // Start timing
+    // start timing
     auto start = std::chrono::high_resolution_clock::now();
     
-    // Perform 2D convolution
+    // perform 2D convolution
     convolution2D_SIMD(input, kernel, output);
     
-    // Stop timing
+    // stop timing
     auto stop = std::chrono::high_resolution_clock::now();
     std::chrono::duration<double, std::milli> duration = stop - start; // timing result
 
-    // Print the input, kernel, and output matrices
+    // print the input, kernel, and output matrices
+    /*
     std::cout << "Input Matrix:\n";
     for (const auto& row : input) {
         for (const auto& val : row) {
@@ -83,8 +84,8 @@ int main() {
         }
         std::cout << std::endl;
     }
-
-    // Output the time taken for convolution
+    */
+    // output the time taken for convolution
     std::cout << "\nTime taken for 2D convolution using x86 SIMD instructions: " << duration.count() << " ms\n";
 
     return 0;
