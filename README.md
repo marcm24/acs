@@ -15,3 +15,4 @@ Utilizing the Flexible I/O Tester (FIO) to perform varying experients to gain an
 Encoding a large text file and performing operations with the encoded data <br />
 
 ### Final Project
+Accelerating programs with NVIDIA CUDA and implementing two-dimensional convolution for image processing applications <br />
