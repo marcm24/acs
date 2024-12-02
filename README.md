@@ -9,4 +9,9 @@ Different experiments performed to gain an understanding of cache and memory hei
 Different multiplication operations performed on varying matrices implementing different optimization techniques including multithreading, SIMD instructions, and cache optimization <br />
 
 ### Project 3: SSD Performance Profiling
-Utilizing the Flexible I/O Tester (FIO) to perform varying experients to gain an understanding of optimal performance parameters for an SSD
+Utilizing the Flexible I/O Tester (FIO) to perform varying experients to gain an understanding of optimal performance parameters for an SSD <br />
+
+### Project 4: Implementation of Dictionary Codec
+Encoding a large text file and performing operations with the encoded data <br />
+
+### Final Project
