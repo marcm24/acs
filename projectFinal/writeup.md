@@ -65,15 +65,15 @@ The 1000x1000 matrix took 1483.25ms, or 1.4s to multiply, the 2000x2000 matrix 1
 (Note: For compilation the command *-march=native* must be included to utilize the x86 SIMD instructions)
 The following results were ovtained for a matrix multiplation program utilizing x86 SIMD instructions of matricies sized 1000x1000, 2000x2000, and 3000x3000: <br />
 
-![image](https://github.com/user-attachments/assets/9fb0a1c1-ced1-43a1-b82c-e15c4fdbcaa9) <br />
-![image](https://github.com/user-attachments/assets/d749395f-8115-485a-887d-3e2d41317e24) <br />
-![image](https://github.com/user-attachments/assets/84b27f98-0e36-4a0c-8de9-4e999342d87a) <br />
+![image](https://github.com/user-attachments/assets/1250fb88-52b2-43b6-bbc7-bb165ec68757) <br />
+![image](https://github.com/user-attachments/assets/1464c699-00be-468b-9a82-74ec2375a6d8) <br />
+![image](https://github.com/user-attachments/assets/0780c5d2-ba73-4b60-8b0c-c0fb81e0120e) <br />
 
-The 1000x1000 matrix took 1941.17ms, or 1.9s to multiply, the 2000x2000 matrix 23582.6ms, or 23s to multiply, and the 3000x3000 matrix took 81035.6ms to mutliply, or 1 minute and 21s. We can see that the program x86 SIMD instructions increased the runtime of the program, but not more than the multithreaded program. <br />
+The 1000x1000 matrix took 1363.04ms or, 1.36s to multiply, the 2000x2000 matrix 12756.9ms or, 12.7s to multiply, and the 3000x3000 matrix took 42590.6ms or, 42.59s. We can see that the program x86 SIMD instructions increased the runtime of the program more than the previous implementations. <br />
 
 ### CUDA Program
 ![image](https://github.com/user-attachments/assets/fbd2bc2a-1178-4b35-87e2-8ea2a9c8bb42) <br />
-![image](https://github.com/user-attachments/assets/57e33fce-d812-48ae-aa14-4909d5c174a0)<br />
+![image](https://github.com/user-attachments/assets/57e33fce-d812-48ae-aa14-4909d5c174a0) <br />
 ![image](https://github.com/user-attachments/assets/ed2f8e04-9e83-4315-8ebf-0e721811e8f9) <br />
 
 The 1000x1000 matrix took 15.773ms to multiply, the 2000x2000 matrix 134.443ms to multiply, and the 3000x3000 matrix took 416.962ms to mutliply. This is significantly faster than any of the other programs run previously. <br />
@@ -97,8 +97,8 @@ The base program took 1574.39ms, or 1.5 seconds to complete. <br />
 ![image](https://github.com/user-attachments/assets/9b47a1f5-868b-4c7c-97a1-bf11a12703a1) <br />
 The multithreaded program took 356.13ms to complete. <br />
 ### C++ Program Using x86 SIMD Instructions
-![image](https://github.com/user-attachments/assets/d6b06eb5-78a7-41b1-951b-ee4922322263) <br />
-The C++ program using x86 SIMD instructions took 2237.62ms, or 2.2 seconds to complete. <br />
+![image](https://github.com/user-attachments/assets/96206948-7238-40d9-bf9c-285d9259ce06) <br />
+The C++ program using x86 SIMD instructions took 555.399ms, or 0.55 seconds to complete. <br />
 ### CUDA Program
 ![image](https://github.com/user-attachments/assets/06de6ba6-bd92-4b52-8571-59bdf89c490c) <br />
 The CUDA program took 191.413ms to complete. <br />
@@ -106,3 +106,25 @@ The CUDA program took 191.413ms to complete. <br />
 We can see that the multithreaded program was faster than the base and program using SIMD instructions however, the CUDA program was faster than all of these programs.
 
 ## Analysis
+### Vector Addition
+The results showed that the base C++ program runtime was much faster than that of the CUDA program. The graph of the results is shown below: <br />
+
+![image](https://github.com/user-attachments/assets/ed84d569-f607-4dee-b250-a33bfbbce31f) <br />
+
+We can notice that as we increase the size of the vector, the base C++ program runtime increases by a large factor where the CUDA program runtime stays largely stable. Due to the single for loop in the C++ program, we expect the runtime to increase with the larger input size. CUDA's use of the GPU for parallel programming might not show validating results with smaller data sizes due to the memory overhead, however we can see that the time is remaining within the range of 140ms-160ms illustrating that the GPU can still benefit the runtime of our program by making it a constant time, and eventually lower then up to when the base program would eventually catch up to the runtime of the CUDA program. <br />
+
+### Matrix Multiplication
+The results showed that the CUDA program was able to multiply the matrices the fastest, followed by the SIMD program, multithreaded program and then finally the base program. The results are shown in the plot below: <br />
+
+![image](https://github.com/user-attachments/assets/6a707c5d-6c82-4278-925b-417aa98ba0cc) <br />
+
+As expected, the CUDA program has the fastest runtime. The base program takes the longest without any optimization. Any form of optimization used would be substantially better than without it, however CUDA is able to perform the multiplication the best, especially for much larger matrices. <br />
+
+### Two-Dimensional Convolution
+The results again showed the CUDA program with the fastest runtime. Due to the more applied nature of the image convolution, we can see the GPUs specific architecture excel in this operation. The plot of runtimes are shown below: <br />
+
+ ![image](https://github.com/user-attachments/assets/7f8c7569-e4a9-4deb-abda-b5dc2b2955a7) <br />
+
+ In this test the multithreaded program was able to operate faster than the SIMD program. The smaller size of the kernel matrix might cause resource overhead where there are many populated registers that are waiting to use their data to multiply with. With this we can draw that the SIMD instructions work best with the registers full, or with similarly sized data. The GPU was able to handle this arithmetic well in comparison, and was able to perform faster. <br />
+
+In conclusion we can see the benefits of utilizing a GPU in programs, especially specific applications requiring heavy arithmetic. We observed that better utilizing the CPU resources for our programs makes them faster, but with a more parallel architecture we are able to perform arithmetic at a much faster rate. <br />
